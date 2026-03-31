@@ -145,6 +145,8 @@ async function blobGet(slug: string): Promise<Post | null> {
 }
 
 async function blobSave(slug: string, meta: Parameters<typeof buildMd>[0], content: string) {
+  // Delete existing blob first (put doesn't overwrite)
+  await blobDelete(slug);
   await put(`${BLOB_PREFIX}${slug}.md`, buildMd(meta, content), {
     access: "public",
     addRandomSuffix: false,
