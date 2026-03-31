@@ -53,7 +53,7 @@ export default async function Home() {
                       <img
                         src={post.coverImage}
                         alt={post.title}
-                        className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
+                        className="w-full h-full object-cover object-top group-hover:scale-[1.03] transition-transform duration-300"
                       />
                     </div>
                   ) : (

@@ -30,8 +30,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       <article className="cb-in">
         {/* Cover */}
         {post.coverImage && (
-          <div className="w-full max-h-[400px] overflow-hidden bg-surface">
-            <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover" />
+          <div className="w-full h-[320px] sm:h-[420px] overflow-hidden bg-surface">
+            <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover object-top" />
           </div>
         )}
 
