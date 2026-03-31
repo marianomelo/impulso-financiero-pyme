@@ -1,16 +1,14 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getPost, getPublishedPosts } from "@/lib/posts";
+import { getPostAsync } from "@/lib/posts";
 import { ReadingProgress } from "@/components/ReadingProgress";
 import { FloatingBar } from "@/components/FloatingBar";
 
-export function generateStaticParams() {
-  return getPublishedPosts().map((p) => ({ slug: p.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = getPost(slug);
+  const post = await getPostAsync(slug);
   if (!post) return {};
   return { title: `${post.title} — Impulso Financiero PYME`, description: post.excerpt };
 }
@@ -23,7 +21,7 @@ function formatDate(dateStr: string) {
 
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = getPost(slug);
+  const post = await getPostAsync(slug);
   if (!post || !post.published) notFound();
 
   return (

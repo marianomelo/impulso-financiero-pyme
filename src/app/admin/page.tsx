@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { isAuthenticated } from "@/lib/auth";
-import { getAllPosts } from "@/lib/posts";
+import { getAllPostsAsync } from "@/lib/posts";
 import { DeleteButton } from "@/components/DeleteButton";
 
 function formatDate(dateStr: string) {
@@ -13,7 +13,7 @@ function formatDate(dateStr: string) {
 export default async function AdminPage() {
   const authed = await isAuthenticated();
   if (!authed) redirect("/admin/login");
-  const posts = getAllPosts();
+  const posts = await getAllPostsAsync();
 
   return (
     <div>

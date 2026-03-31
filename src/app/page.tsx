@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { getPublishedPosts } from "@/lib/posts";
+import { getAllPostsAsync } from "@/lib/posts";
+
+export const dynamic = "force-dynamic";
 
 function formatDate(dateStr: string) {
   if (!dateStr) return "";
@@ -7,8 +9,9 @@ function formatDate(dateStr: string) {
   return d.toLocaleDateString("es-ES", { month: "short", day: "numeric", year: "numeric" });
 }
 
-export default function Home() {
-  const posts = getPublishedPosts();
+export default async function Home() {
+  const all = await getAllPostsAsync();
+  const posts = all.filter((p) => p.published);
 
   return (
     <div className="cb-in">

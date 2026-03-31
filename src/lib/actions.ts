@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { savePost, deletePostFile, getPost, slugify } from "./posts";
+import { savePostAsync, deletePostAsync, getPostAsync, slugify } from "./posts";
 import { createSessionToken, setSessionCookie, clearSessionCookie, isAuthenticated } from "./auth";
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
@@ -39,13 +39,12 @@ export async function savePostAction(_prev: { error: string } | null, formData: 
 
   const slug = originalSlug || slugify(title);
 
-  // Si cambió el slug y el nuevo ya existe, error
   if (!originalSlug) {
-    const existing = getPost(slug);
+    const existing = await getPostAsync(slug);
     if (existing) return { error: "Ya existe un post con ese slug" };
   }
 
-  savePost(slug, { title, date, excerpt, coverImage, videoUrl, published }, content);
+  await savePostAsync(slug, { title, date, excerpt, coverImage, videoUrl, published }, content);
 
   revalidatePath("/");
   revalidatePath(`/blog/${slug}`);
@@ -58,7 +57,7 @@ export async function deletePostAction(formData: FormData) {
   if (!authed) redirect("/admin/login");
 
   const slug = formData.get("slug") as string;
-  deletePostFile(slug);
+  await deletePostAsync(slug);
 
   revalidatePath("/");
   revalidatePath("/admin");

@@ -1,6 +1,6 @@
 import { redirect, notFound } from "next/navigation";
 import { isAuthenticated } from "@/lib/auth";
-import { getPost } from "@/lib/posts";
+import { getPostAsync } from "@/lib/posts";
 import PostForm from "@/components/PostForm";
 
 export default async function EditPostPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -8,7 +8,7 @@ export default async function EditPostPage({ params }: { params: Promise<{ slug:
   if (!authed) redirect("/admin/login");
 
   const { slug } = await params;
-  const post = getPost(slug);
+  const post = await getPostAsync(slug);
   if (!post) notFound();
 
   return (
