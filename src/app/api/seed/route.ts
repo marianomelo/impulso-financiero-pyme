@@ -1,20 +1,23 @@
-import { NextResponse } from "next/server";
-import { isAuthenticated } from "@/lib/auth";
+import { NextRequest, NextResponse } from "next/server";
 import { savePostAsync, getAllPostsAsync } from "@/lib/posts";
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 
-export async function POST() {
-  const authed = await isAuthenticated();
-  if (!authed) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+export async function POST(request: NextRequest) {
+  // Protect with a simple secret
+  const { searchParams } = new URL(request.url);
+  const secret = searchParams.get("secret");
+  if (secret !== (process.env.AUTH_SECRET || "")) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  // Read all local .md files and upload to blob
   const postsDir = path.join(process.cwd(), "content", "posts");
-  const files = fs.readdirSync(postsDir).filter((f) => f.endsWith(".md"));
+  if (!fs.existsSync(postsDir)) {
+    return NextResponse.json({ error: "No local posts found" }, { status: 404 });
+  }
 
+  const files = fs.readdirSync(postsDir).filter((f) => f.endsWith(".md"));
   const existing = await getAllPostsAsync();
   const existingSlugs = new Set(existing.map((p) => p.slug));
 
