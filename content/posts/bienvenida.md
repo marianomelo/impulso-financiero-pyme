@@ -2,7 +2,7 @@
 title: "El microcredito en Venezuela: una promesa sin suelo firme"
 date: 2026-03-31
 excerpt: "Analisis sobre como los microcreditos enfrentan un entorno de hiperinflacion, contraccion economica y exclusion financiera en Venezuela, y por que su promesa de desarrollo productivo sigue sin cumplirse."
-coverImage:
+coverImage: https://cloudfront-us-east-1.images.arcpublishing.com/infobae/33GV2VA4AFDVTJV5QQUVCXAQM4.jpg
 videoUrl:
 published: true
 ---
