@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { savePostAsync, getAllPostsAsync } from "@/lib/posts";
+import { savePostAsync, getAllPostsAsync, deletePostAsync } from "@/lib/posts";
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
@@ -44,5 +44,15 @@ export async function POST(request: NextRequest) {
     uploaded++;
   }
 
-  return NextResponse.json({ ok: true, uploaded, total: files.length });
+  // Clean up blobs that no longer have local files
+  const localSlugs = new Set(files.map((f) => f.replace(/\.md$/, "")));
+  let deleted = 0;
+  for (const post of existing) {
+    if (!localSlugs.has(post.slug)) {
+      await deletePostAsync(post.slug);
+      deleted++;
+    }
+  }
+
+  return NextResponse.json({ ok: true, uploaded, deleted, total: files.length });
 }
