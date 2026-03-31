@@ -5,13 +5,13 @@ import path from "path";
 import matter from "gray-matter";
 
 export async function POST(request: NextRequest) {
-  // Protect with a simple secret
   const { searchParams } = new URL(request.url);
   const secret = searchParams.get("secret");
   if (secret !== (process.env.AUTH_SECRET || "")) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
+  const force = searchParams.get("force") === "1";
   const postsDir = path.join(process.cwd(), "content", "posts");
   if (!fs.existsSync(postsDir)) {
     return NextResponse.json({ error: "No local posts found" }, { status: 404 });
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
   let uploaded = 0;
   for (const file of files) {
     const slug = file.replace(/\.md$/, "");
-    if (existingSlugs.has(slug)) continue;
+    if (!force && existingSlugs.has(slug)) continue;
 
     const raw = fs.readFileSync(path.join(postsDir, file), "utf-8");
     const { data, content } = matter(raw);
